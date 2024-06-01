@@ -2,8 +2,8 @@
 resource "random_uuid" "kube_resource_uuid" {}
 
 module "infrastructure_rg" {
-  source   = "./resource_group_management"
-  
+  source = "./resource_group_management"
+
   for_each = var.cluster_rg_config
   location = var.resource_location
   name     = "${local.resource_name_prefix}_${each.value.name}"
@@ -22,7 +22,7 @@ resource "azurerm_virtual_network" "kube_vnet" {
 
 locals {
   resource_name_prefix = "${random_uuid.kube_resource_uuid.result}_${var.stage}"
-  
+
   # How to create an map(object) using a for
   cluster_rg = {
     for k, v in var.cluster_rg_config :
@@ -30,4 +30,5 @@ locals {
     "${k}" => {
       "name" = "${local.resource_name_prefix}_${k}"
     }
+  }
 }
